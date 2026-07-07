@@ -1,0 +1,14 @@
+{
+  "name": "nEm — Nova Energia da Madeira",
+  "short_name": "nEm",
+  "description": "Energia da Madeira chave-na-mão: painéis, baterias, carregadores e subsídios.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07221B",
+  "theme_color": "#07221B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}
