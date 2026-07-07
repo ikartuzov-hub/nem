@@ -1,259 +1,386 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>nEm — Nova Energia da Madeira</title>
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#07221B">
+<title>nAm · Novos Apoios da Madeira</title>
+<link rel="icon" type="image/svg+xml" href="nam-icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07221B; --ink:#EAF7F0; --muted:#93B4A6; --accent:#12D68A;
-    --line:#12463A; --card:#0C2E25; --cardline:#153A30;
-    --btnbg:#123E32; --btnline:#3A7A64;
+    --bg:#0B1626; --ink:#EAF1FB; --muted:#7FA6D9; --accent:#4C8DFF;
+    --line:#1C3252; --card:#10203A; --btn:#132646;
   }
   :root[data-theme="light"]{
-    --bg:#F1FAF5; --ink:#0A2E22; --muted:#5B7A6E; --accent:#0E9E6E;
-    --line:#D3E8DE; --card:#FFFFFF; --cardline:#E2F0EA;
-    --btnbg:#FFFFFF; --btnline:#CFE6DB;
+    --bg:#F2F6FB; --ink:#0A2340; --muted:#5B7395; --accent:#1D5FD6;
+    --line:#D9E4F2; --card:#FFFFFF; --btn:#E8EFF9;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px}
 
-  .topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
-  .topbar .bar{max-width:880px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand svg{width:26px;height:26px;flex:none}
-  .brand .wm{font-family:"Fraunces",serif;font-weight:600;font-size:18px;letter-spacing:.3px}
-  .brand .wm b{color:var(--accent);font-weight:600}
+  /* ── topbar: значок+словомарка слева, две круглые кнопки справа ── */
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink)}
+  .brandmark{width:26px;height:26px;flex:none}
+  .wm{font-family:"Fraunces",serif;font-weight:600;font-size:18px;letter-spacing:.2px}
+  .wm b{color:var(--accent);font-weight:600}
+  @keyframes markIn{
+    0%{transform:translate(calc(50vw - 29px), calc(45vh - 26px)) scale(8);opacity:0}
+    18%{opacity:1}
+    62%{transform:translate(calc(50vw - 29px), calc(45vh - 26px)) scale(8)}
+    100%{transform:translate(0,0) scale(1)}
+  }
+  .brandmark.reveal{animation:markIn 2.6s cubic-bezier(.65,0,.25,1) both}
+  @media(prefers-reduced-motion:reduce){.brandmark.reveal{animation:none}}
+
   .topctrl{display:flex;align-items:center;gap:8px}
-  .rbtn{width:40px;height:40px;min-width:40px;padding:0;border-radius:50%;border:1px solid var(--btnline);
-    background:var(--btnbg);color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  .rbtn{width:40px;height:40px;min-width:40px;padding:0;border-radius:50%;border:1px solid var(--line);
+    background:var(--btn);color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
     display:flex;align-items:center;justify-content:center;transition:.15s;flex:none}
   .rbtn:hover{border-color:var(--accent)}
+  .rbtn:active{transform:scale(.92)}
   .langwrap{position:relative}
-  .menu{position:absolute;top:48px;right:0;background:var(--card);border:1px solid var(--btnline);border-radius:12px;
-    padding:6px;min-width:176px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.28);z-index:30}
+  .menu{position:absolute;top:48px;right:0;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:6px;min-width:176px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.28);z-index:40}
   .menu.open{display:block}
   .menu button{display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:8px;border:none;
-    background:transparent;text-align:left;cursor:pointer;color:var(--ink);font-family:inherit;font-size:14px}
-  .menu button:hover{background:var(--bg)}
-  .menu button .code{color:var(--muted);font-weight:600;width:26px}
-  .menu button.active,.menu button.active .code{color:var(--accent)}
+    background:transparent;color:var(--muted);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;text-align:left}
+  .menu button:hover{background:var(--btn);color:var(--ink)}
+  .menu button.on{color:var(--accent);font-weight:600}
+  .menu .code{display:inline-block;width:26px;font-weight:700;font-size:12px}
 
-  .hero{padding:56px 0 44px}
+  .counter{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+    padding:10px 0;text-align:center;display:none}
+  .counter.on{display:block}
+  .counter .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .counter .val{font-family:"Fraunces",serif;font-size:clamp(22px,5vw,30px);font-weight:600;color:var(--accent)}
+
+  .screen{display:none;padding:36px 0 60px}
+  .screen.on{display:block}
   .kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:16px}
-  h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(34px,6.4vw,56px);line-height:1.04;letter-spacing:-.6px;max-width:14ch}
-  .sub{margin-top:20px;font-size:clamp(17px,2.3vw,20px);color:var(--muted);max-width:52ch}
+  h1{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(28px,6vw,42px);line-height:1.12;letter-spacing:-.4px}
+  .sub{margin-top:16px;font-size:clamp(15px,2.2vw,18px);color:var(--muted);max-width:46ch}
+  .primary{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--accent);color:#fff;
+    border:none;cursor:pointer;text-decoration:none;font-family:inherit;font-weight:600;font-size:16px;
+    padding:14px 26px;border-radius:999px;transition:.15s}
+  .primary:hover{transform:translateY(-1px)}
 
-  section{padding:38px 0;border-top:1px solid var(--line)}
-  .eyebrow{font-family:"Fraunces",serif;font-size:21px;font-weight:600;margin-bottom:22px}
-  .grid{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
-  .card{background:var(--card);border:1px solid var(--cardline);border-radius:16px;padding:22px 20px}
-  .card .ic{width:30px;height:30px;color:var(--accent);margin-bottom:12px}
-  .card h3{font-size:16.5px;font-weight:600;margin-bottom:7px}
-  .card p{font-size:14.5px;color:var(--muted);line-height:1.55}
-  .steps{display:grid;gap:12px}
-  .step{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--cardline);border-radius:14px;padding:16px 20px}
-  .step .num{flex:none;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#04140E;
-    font-family:"Fraunces",serif;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:15px}
-  .step p{font-size:16px}
+  .qnum{font-size:13px;color:var(--muted);margin-bottom:10px}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(22px,4.6vw,30px);line-height:1.2}
+  .opts{display:grid;gap:12px;margin-top:24px}
+  .opt{background:var(--btn);border:1px solid var(--line);color:var(--ink);font-family:inherit;
+    font-size:16px;text-align:left;padding:16px 18px;border-radius:14px;cursor:pointer;transition:.15s}
+  .opt:hover{border-color:var(--accent)}
+  .back{background:none;border:none;color:var(--muted);font-family:inherit;font-size:14px;
+    cursor:pointer;margin-top:22px;padding:4px 0}
+  .back:hover{color:var(--ink)}
 
-  .close{padding:54px 0 40px;text-align:center;border-top:1px solid var(--line)}
-  .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#04140E;
-    text-decoration:none;font-weight:600;font-size:19px;padding:16px 54px;border-radius:999px;transition:.15s}
-  .cta:hover{transform:translateY(-1px)}
-  .energy{margin-top:34px}
-  .energy svg{width:100%;max-width:540px;height:auto}
-  .flowline{stroke-dasharray:5 9;animation:flow 1.4s linear infinite}
-  @keyframes flow{to{stroke-dashoffset:-14}}
-
-  footer{padding:24px 0 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);text-align:center}
-  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--accent)}
-  footer a:hover{color:var(--ink)}
-
-  @media(max-width:600px){.grid{grid-template-columns:1fr}.hero{padding:44px 0 30px}}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}.flowline{animation:none}}
+  .total{font-family:"Fraunces",serif;font-size:clamp(34px,8vw,54px);font-weight:600;color:var(--accent);margin-top:10px}
+  .tierb{display:none;margin-top:8px;font-family:"Fraunces",serif;font-size:clamp(16px,3vw,20px);font-weight:500;color:var(--muted)}
+  .tierb.on{display:block}
+  .cards{display:grid;gap:12px;margin-top:26px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .pcard h3{font-size:16px;font-weight:600}
+  .pcard .rng{font-family:"Fraunces",serif;color:var(--accent);font-weight:600;font-size:17px;margin:4px 0 5px}
+  .pcard p{font-size:14px;color:var(--muted)}
+  .chip{display:inline-block;font-size:12px;border:1px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:2px 10px;margin-top:9px;margin-right:6px}
+  .chip.open{border-color:var(--accent);color:var(--accent)}
+  .ctaBlock{margin-top:34px;text-align:center;border-top:1px solid var(--line);padding-top:28px}
+  .ctaBlock .t{font-family:"Fraunces",serif;font-size:20px;font-weight:500}
+  .ctaSub{margin-top:12px;font-size:14px;color:var(--muted)}
+  .disc{margin-top:30px;font-size:12px;color:var(--muted)}
+  .share{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:transparent;color:var(--muted);
+    border:1px solid var(--line);cursor:pointer;font-family:inherit;font-weight:500;font-size:14px;
+    padding:11px 20px;border-radius:999px;transition:.15s}
+  .share:hover{border-color:var(--accent);color:var(--ink)}
+  footer{padding:22px 0 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:20px;text-align:center}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
+  footer a:hover{color:var(--accent);border-color:var(--accent)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
-  <div class="topbar">
-    <div class="bar">
-      <div class="brand">
-        <svg viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="nEm"><title>nEm</title><path d="M22 20 L22 62"/><path d="M22 20 Q31 14 40 20 Q49 26 58 20"/><path d="M22 41 Q30 35 38 41 Q46 47 54 41"/><path d="M22 62 Q31 56 40 62 Q49 68 58 62"/><path d="M15 86 Q28 80 39 86 Q50 92 61 86 Q72 80 85 86"/></svg>
-        <span class="wm">n<b>E</b>m</span>
-      </div>
-      <div class="topctrl">
-        <div class="langwrap">
-          <button class="rbtn" id="langBtn" aria-haspopup="true" aria-label="Language">RU</button>
-          <div class="menu" id="langMenu">
-            <button data-lang="ru"><span class="code">RU</span>Русский</button>
-            <button data-lang="en"><span class="code">EN</span>English</button>
-            <button data-lang="pt"><span class="code">PT</span>Português</button>
-            <button data-lang="es"><span class="code">ES</span>Español</button>
-            <button data-lang="de"><span class="code">DE</span>Deutsch</button>
-          </div>
-        </div>
-        <button class="rbtn" id="themeBtn" aria-label="Theme">☀</button>
-      </div>
-    </div>
+<div class="topbar">
+  <div class="brand">
+    <svg class="brandmark" id="mark" viewBox="0 0 100 100" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="nAm">
+      <path d="M30 72 L50 16 L70 72"/>
+      <path d="M37 52 Q43.5 46 50 52 Q56.5 58 63 52"/>
+      <path d="M15 88 Q28 82 39 88 Q50 94 61 88 Q72 82 85 88"/>
+    </svg>
+    <span class="wm">n<b>A</b>m</span>
   </div>
-
-  <header class="hero wrap">
-    <div class="kicker" data-i18n="kicker"></div>
-    <h1>Nova Energia da Madeira</h1>
-    <p class="sub" data-i18n="sub"></p>
-  </header>
-
-  <section class="wrap">
-    <div class="grid">
-      <div class="card">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
-        <h3 data-i18n="b1t"></h3><p data-i18n="b1p"></p>
-      </div>
-      <div class="card">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H12l-1 9 8.5-11H12l1-9z"/></svg>
-        <h3 data-i18n="b2t"></h3><p data-i18n="b2p"></p>
-      </div>
-      <div class="card">
-        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
-        <h3 data-i18n="b3t"></h3><p data-i18n="b3p"></p>
-      </div>
+  <div class="topctrl">
+    <div class="langwrap">
+      <button class="rbtn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-label="Language">PT</button>
+      <div class="menu" id="langMenu"></div>
     </div>
+    <button class="rbtn" id="themeBtn" aria-label="Theme">☾</button>
+  </div>
+</div>
+
+<div class="counter" id="counter">
+  <div class="lbl" data-ui="counterLabel"></div>
+  <div class="val" id="counterVal">€0</div>
+</div>
+
+<main class="wrap">
+  <section class="screen on" id="scr-hero">
+    <div class="kicker" data-ui="kicker"></div>
+    <h1 data-ui="heroTitle"></h1>
+    <p class="sub" data-ui="heroSub"></p>
+    <button class="primary" id="startBtn" data-ui="start"></button>
   </section>
 
-  <section class="wrap">
-    <div class="eyebrow" data-i18n="howt"></div>
-    <div class="steps">
-      <div class="step"><div class="num">1</div><p data-i18n="s1"></p></div>
-      <div class="step"><div class="num">2</div><p data-i18n="s2"></p></div>
-      <div class="step"><div class="num">3</div><p data-i18n="s3"></p></div>
-    </div>
+  <section class="screen" id="scr-q">
+    <div class="qnum" id="qnum"></div>
+    <h2 id="qtext"></h2>
+    <div class="opts" id="opts"></div>
+    <button class="back" id="backBtn" data-ui="back"></button>
   </section>
 
-  <div class="close wrap">
-    <a class="cta" id="ctaBtn" href="https://t.me/SeedWaveBot?start=nem_ru" data-i18n="cta"></a>
-    <div class="energy" aria-hidden="true">
-      <svg viewBox="0 0 600 150" fill="none">
-        <circle cx="58" cy="75" r="22" fill="#F5B32E" fill-opacity="0.14" stroke="#F5B32E" stroke-width="3"/>
-        <g stroke="#F5B32E" stroke-width="3" stroke-linecap="round">
-          <line x1="58" y1="40" x2="58" y2="30"/><line x1="58" y1="120" x2="58" y2="110"/>
-          <line x1="23" y1="75" x2="13" y2="75"/><line x1="103" y1="75" x2="93" y2="75"/>
-          <line x1="33" y1="50" x2="26" y2="43"/><line x1="90" y1="107" x2="83" y2="100"/>
-          <line x1="33" y1="100" x2="26" y2="107"/><line x1="90" y1="43" x2="83" y2="50"/>
-        </g>
-        <path class="flowline" d="M92 75 Q112 55 132 75 T172 75 T212 75 T248 75" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
-        <rect x="252" y="52" width="66" height="46" rx="9" stroke="var(--ink)" stroke-width="3"/>
-        <rect x="276" y="45" width="18" height="8" rx="2" fill="var(--ink)"/>
-        <path d="M289 60 L279 79 H287 L283 92 L300 70 H290 L295 60 Z" fill="var(--accent)"/>
-        <path class="flowline" d="M322 75 Q342 55 362 75 T402 75 T442 75 T502 75" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
-        <rect x="508" y="48" width="54" height="54" rx="14" stroke="var(--ink)" stroke-width="3"/>
-        <circle cx="535" cy="75" r="20" stroke="var(--ink)" stroke-width="3"/>
-        <circle cx="527" cy="75" r="3.6" fill="var(--ink)"/>
-        <circle cx="543" cy="75" r="3.6" fill="var(--ink)"/>
-      </svg>
+  <section class="screen" id="scr-result">
+    <div class="kicker" data-ui="resultTitle"></div>
+    <div class="total" id="total"></div>
+    <div class="tierb" id="tierb"></div>
+    <p class="sub" data-ui="resultSub"></p>
+    <div class="cards" id="cards"></div>
+    <div class="ctaBlock">
+      <div class="t" data-ui="ctaTitle"></div>
+      <a class="primary" id="ctaBtn" target="_blank" rel="noopener" data-ui="cta"></a>
+      <p class="ctaSub" data-ui="ctaSub"></p>
+      <div><button class="share" id="shareBtn" data-ui="shareBtn"></button></div>
+      <button class="back" id="restartBtn" data-ui="restart"></button>
     </div>
-  </div>
+    <p class="disc" data-ui="disclaimer"></p>
+  </section>
+</main>
 
-  <footer class="wrap">© <span id="fyear">2026</span> <a id="hubLink" href="https://ikartuzov-hub.github.io/seedwave-catalog/hub/">SeedWave</a> · <a href="https://www.linkedin.com/in/igor-kartuzov/">Igor Kartuzov</a></footer>
+<footer class="wrap" id="foot"></footer>
 
 <script>
-  var I18N={
-    ru:{kicker:"Энергия · Мадейра",
-      sub:"Солнце, батареи и зарядки для дома — чистая, зелёная энергия с субсидией и поддержкой государства, под ключ.",
-      b1t:"Энергосбережение",b1p:"Солнце днём, батарея вечером — общий счёт за электричество падает. Дом работает на своей чистой энергии.",
-      b2t:"Новые технологии",b2p:"Панели, накопитель и зарядки для электромобилей — один умный энергоконтур последнего поколения.",
-      b3t:"Субсидия и господдержка",b3p:"Государственные программы +ENERGIA и Fundo Ambiental покрывают значительную часть затрат. Всё оформление — на проекте.",
-      howt:"Как это работает",
-      s1:"Оценивается крыша, потребление и окупаемость.",s2:"Оформляется заявка на субсидию, готовятся все документы.",s3:"Устанавливается под ключ — панели, батарея и зарядки.",
-      cta:"Хочу"},
-    en:{kicker:"Energy · Madeira",
-      sub:"Sun, batteries and charging for your home — clean, green energy with a subsidy and state support, turnkey.",
-      b1t:"Energy saving",b1p:"Sun by day, battery by night — the electricity bill drops. The home runs on its own clean energy.",
-      b2t:"New technology",b2p:"Panels, storage and EV charging — one smart, latest-generation energy loop.",
-      b3t:"Subsidy and state support",b3p:"The state programmes +ENERGIA and Fundo Ambiental cover a significant part of the cost. All the paperwork is handled by the project.",
-      howt:"How it works",
-      s1:"The roof, consumption and payback are assessed.",s2:"The subsidy application is filed and all documents prepared.",s3:"It is installed turnkey — panels, battery and charging.",
-      cta:"I want it"},
-    pt:{kicker:"Energia · Madeira",
-      sub:"Sol, baterias e carregamento para a sua casa — energia limpa e verde, com subsídio e apoio do Estado, chave-na-mão.",
-      b1t:"Poupança de energia",b1p:"Sol de dia, bateria à noite — a fatura da luz desce. A casa funciona com a sua própria energia limpa.",
-      b2t:"Novas tecnologias",b2p:"Painéis, armazenamento e carregamento de VE — um circuito de energia inteligente de última geração.",
-      b3t:"Subsídio e apoio do Estado",b3p:"Os programas do Estado +ENERGIA e Fundo Ambiental cobrem uma parte significativa do custo. Toda a documentação fica a cargo do projeto.",
-      howt:"Como funciona",
-      s1:"Avaliam-se o telhado, o consumo e o retorno.",s2:"Trata-se da candidatura ao subsídio e prepara-se toda a documentação.",s3:"Instala-se chave-na-mão — painéis, bateria e carregamento.",
-      cta:"Quero"},
-    de:{kicker:"Energie · Madeira",
-      sub:"Sonne, Batterien und Ladepunkte für Ihr Zuhause — saubere, grüne Energie mit Förderung und staatlicher Unterstützung, schlüsselfertig.",
-      b1t:"Energie sparen",b1p:"Sonne am Tag, Batterie am Abend — die Stromrechnung sinkt. Das Haus läuft mit eigener sauberer Energie.",
-      b2t:"Neue Technologien",b2p:"Module, Speicher und E-Auto-Ladung — ein intelligenter Energiekreislauf der neuesten Generation.",
-      b3t:"Förderung und Staat",b3p:"Die staatlichen Programme +ENERGIA und Fundo Ambiental decken einen erheblichen Teil der Kosten. Die gesamte Abwicklung übernimmt das Projekt.",
-      howt:"So funktioniert es",
-      s1:"Dach, Verbrauch und Amortisation werden geprüft.",s2:"Der Förderantrag wird gestellt und alle Unterlagen vorbereitet.",s3:"Alles wird schlüsselfertig installiert — Module, Batterie und Ladepunkte.",
-      cta:"Ich will"},
-    es:{kicker:"Energía · Madeira",
-      sub:"Sol, baterías y carga para tu casa — energía limpia y verde, con subvención y apoyo del Estado, llave en mano.",
-      b1t:"Ahorro de energía",b1p:"Sol de día, batería de noche — la factura de la luz baja. La casa funciona con su propia energía limpia.",
-      b2t:"Nuevas tecnologías",b2p:"Paneles, almacenamiento y carga de VE — un circuito de energía inteligente de última generación.",
-      b3t:"Subvención y apoyo del Estado",b3p:"Los programas estatales +ENERGIA y Fundo Ambiental cubren una parte importante del coste. Toda la gestión corre a cargo del proyecto.",
-      howt:"Cómo funciona",
-      s1:"Se evalúan el tejado, el consumo y la amortización.",s2:"Se tramita la solicitud de subvención y se preparan todos los documentos.",s3:"Se instala llave en mano — paneles, batería y carga.",
-      cta:"Quiero"}
-  };
-  var LANGS=["ru","en","pt","es","de"];
-  document.getElementById("fyear").textContent=new Date().getFullYear();
-  var root=document.documentElement, q=new URLSearchParams(location.search);
+(function(){
+  var FALLBACK_LANGS=[{code:"pt",label:"Português"},{code:"en",label:"English"},{code:"ru",label:"Русский"},{code:"es",label:"Español"},{code:"de",label:"Deutsch"}];
+  var UI={}, DATA=null, lang="pt";
+  var answers={}, order=[], step=0;
 
-  function detectLang(){
-    var p=q.get("lang"); if(p&&I18N[p])return p;
-    var s=localStorage.getItem("nem-lang"); if(s&&I18N[s])return s;
-    var n=(navigator.language||"ru").slice(0,2).toLowerCase(); if(I18N[n])return n;
-    return "ru";
-  }
-  function setLang(l){
-    if(!I18N[l])l="ru";
-    root.lang=l;
-    document.querySelectorAll("[data-i18n]").forEach(function(el){
-      var k=el.getAttribute("data-i18n"); if(I18N[l][k]!=null)el.textContent=I18N[l][k];
-    });
-    document.getElementById("langBtn").textContent=l.toUpperCase();
-    document.querySelectorAll("#langMenu button").forEach(function(b){
-      b.classList.toggle("active",b.dataset.lang===l);
-    });
-    document.getElementById("hubLink").href="https://ikartuzov-hub.github.io/seedwave-catalog/hub/?lang="+l;
-    document.getElementById("ctaBtn").href="https://t.me/SeedWaveBot?start=nem_"+l;
-    localStorage.setItem("nem-lang",l);
-  }
-  setLang(detectLang());
+  function codes(){return (DATA&&DATA.config.languages?DATA.config.languages:FALLBACK_LANGS).map(function(l){return l.code})}
 
+  var params=new URLSearchParams(location.search);
+  var pl=params.get("lang"); var sl=null;
+  try{sl=localStorage.getItem("nam-lang")}catch(e){}
+  var VALID=["pt","en","ru","es","de"];
+  if(VALID.indexOf(pl)>=0) lang=pl; else if(VALID.indexOf(sl)>=0) lang=sl;
+
+  var pt=params.get("theme"); var st=null;
+  try{st=localStorage.getItem("nam-theme")}catch(e){}
+  var theme=(pt==="light"||pt==="night")?pt:(st==="light"||st==="night")?st:"night";
+  applyTheme(theme);
+
+  function applyTheme(t){
+    theme=t;
+    if(t==="light") document.documentElement.setAttribute("data-theme","light");
+    else document.documentElement.removeAttribute("data-theme");
+    var b=document.getElementById("themeBtn"); if(b) b.textContent=(t==="light")?"☀":"☾";
+    try{localStorage.setItem("nam-theme",t)}catch(e){}
+  }
+  document.getElementById("themeBtn").onclick=function(){applyTheme(theme==="light"?"night":"light")};
+
+  function q(url){var s="?lang="+lang+"&theme="+theme;return url+(url.indexOf("?")>=0?"&":"?")+s.slice(1)}
+  function T(k){return UI[k]!=null?UI[k]:k}
+  function L(obj){return obj&&(obj[lang]!=null?obj[lang]:obj.pt)}
+  function eur(n){
+    var loc=lang==="ru"?"ru-RU":lang==="en"?"en-GB":lang==="es"?"es-ES":lang==="de"?"de-DE":"pt-PT";
+    return "€"+n.toLocaleString(loc);
+  }
+
+  /* ── язык: круглая кнопка + выпадающее меню (5 языков, стандарт линейки) ── */
   var lb=document.getElementById("langBtn"), lm=document.getElementById("langMenu");
-  lb.onclick=function(e){e.stopPropagation();lm.classList.toggle("open");};
-  lm.querySelectorAll("button").forEach(function(b){
-    b.onclick=function(){setLang(b.dataset.lang);lm.classList.remove("open");};
-  });
-  document.addEventListener("click",function(){lm.classList.remove("open");});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape")lm.classList.remove("open");});
-
-  var savedTheme=q.get("theme")||localStorage.getItem("nem-theme")||"dark";
-  if(savedTheme==="light")root.setAttribute("data-theme","light");
-  var tb=document.getElementById("themeBtn");
-  function syncTheme(){tb.textContent=root.getAttribute("data-theme")==="light"?"☾":"☀";}
-  syncTheme();
-  tb.onclick=function(){
-    var light=root.getAttribute("data-theme")==="light";
-    if(light){root.removeAttribute("data-theme");localStorage.setItem("nem-theme","dark");}
-    else{root.setAttribute("data-theme","light");localStorage.setItem("nem-theme","light");}
-    syncTheme();
+  function buildLangMenu(){
+    var list=(DATA&&DATA.config.languages)?DATA.config.languages:FALLBACK_LANGS;
+    lm.innerHTML="";
+    list.forEach(function(l){
+      var b=document.createElement("button");
+      if(l.code===lang) b.className="on";
+      var c=document.createElement("span"); c.className="code"; c.textContent=l.code.toUpperCase();
+      b.appendChild(c); b.appendChild(document.createTextNode(l.label));
+      b.onclick=function(){closeLang(); if(l.code!==lang) setLang(l.code)};
+      lm.appendChild(b);
+    });
+  }
+  function closeLang(){lm.classList.remove("open");lb.setAttribute("aria-expanded","false")}
+  lb.onclick=function(e){
+    e.stopPropagation();
+    var open=lm.classList.toggle("open");
+    lb.setAttribute("aria-expanded",open?"true":"false");
+    if(open) buildLangMenu();
   };
+  document.addEventListener("click",function(e){if(!e.target.closest(".langwrap")) closeLang()});
+
+  function fill(){
+    document.documentElement.lang=lang;
+    document.documentElement.dir=UI.dir||"ltr";
+    document.querySelectorAll("[data-ui]").forEach(function(el){
+      el.textContent=T(el.getAttribute("data-ui"));
+    });
+    lb.textContent=lang.toUpperCase();
+    lb.setAttribute("aria-label",T("langAria"));
+    document.getElementById("themeBtn").setAttribute("aria-label",T("themeAria"));
+    /* футер-стандарт: © {год} SeedWave · Igor Kartuzov, обе ссылки активны */
+    var f=document.getElementById("foot");
+    f.innerHTML='© '+(new Date().getFullYear())+' <a href="'+q(DATA.config.hubUrl)+'" target="_blank" rel="noopener">SeedWave</a> · <a href="'+DATA.config.linkedinUrl+'" target="_blank" rel="noopener">Igor Kartuzov</a>';
+    document.getElementById("ctaBtn").href=DATA.config.ctaUrl;
+  }
+
+  function setLang(l){
+    lang=l; try{localStorage.setItem("nam-lang",l)}catch(e){}
+    loadUI(function(){fill(); if(current==="q") renderQ(); if(current==="result") renderResult(); updateCounter();});
+  }
+
+  function loadUI(cb){
+    fetch("ui."+lang+".json").then(function(r){return r.json()}).then(function(j){UI=j;cb()})
+      .catch(function(){UI={};cb()});
+  }
+
+  var current="hero";
+  function show(id){
+    current=id;
+    ["hero","q","result"].forEach(function(s){
+      document.getElementById("scr-"+s).classList.toggle("on",s===id);
+    });
+    document.getElementById("counter").classList.toggle("on",id!=="hero");
+    window.scrollTo(0,0);
+  }
+
+  function visibleQuestions(){
+    return DATA.questions.filter(function(qq){
+      if(!qq.showIf) return true;
+      return Object.keys(qq.showIf).every(function(k){return answers[k]===qq.showIf[k]});
+    });
+  }
+
+  function matched(){
+    return DATA.programs.filter(function(p){
+      return Object.keys(p.match).every(function(k){
+        var need=p.match[k];
+        if(Array.isArray(need)) return need.indexOf(answers[k])>=0;
+        return answers[k]===need;
+      });
+    });
+  }
+
+  /* сорт А — прямые/формульные апойо (в сумму заголовка);
+     сорт Б (tierB) — конкурсные программы, отдельной строкой */
+  function sums(){
+    var ms=matched(), lo=0, hi=0, bhi=0;
+    ms.forEach(function(p){
+      if(p.tierB){bhi+=p.max}
+      else{lo+=p.min;hi+=p.max}
+    });
+    return {ms:ms,lo:lo,hi:hi,bhi:bhi};
+  }
+
+  function updateCounter(){
+    var s=sums();
+    document.getElementById("counterVal").textContent=
+      s.hi>0?(eur(s.lo)+" – "+eur(s.hi)):eur(0);
+  }
+
+  function renderQ(){
+    order=visibleQuestions();
+    if(step>=order.length){renderResult();show("result");return}
+    var qq=order[step];
+    document.getElementById("qnum").textContent=(step+1)+" "+T("progressOf")+" "+order.length;
+    document.getElementById("qtext").textContent=L(qq.text);
+    var box=document.getElementById("opts"); box.innerHTML="";
+    qq.options.forEach(function(o){
+      var b=document.createElement("button");
+      b.className="opt"; b.textContent=L(o.label);
+      b.onclick=function(){
+        answers[qq.id]=o.v;
+        order=visibleQuestions();
+        updateCounter();
+        step++;
+        if(step>=order.length){renderResult();show("result")}else renderQ();
+      };
+      box.appendChild(b);
+    });
+    updateCounter();
+  }
+
+  function statusText(s){
+    return s==="open"?T("statusOpen"):s==="window"?T("statusWindow"):T("statusAviso");
+  }
+
+  function renderResult(){
+    var s=sums();
+    var tt=document.getElementById("total");
+    var tb=document.getElementById("tierb");
+    var cards=document.getElementById("cards"); cards.innerHTML="";
+    tb.classList.remove("on"); tb.textContent="";
+    if(s.ms.length===0){
+      tt.textContent=T("noneTitle");
+      var p=document.createElement("p"); p.className="sub"; p.textContent=T("noneSub");
+      cards.appendChild(p);
+    } else {
+      var note=T("tierBNote").replace("{sum}",eur(s.bhi));
+      if(s.hi>0){
+        tt.textContent=eur(s.lo)+" – "+eur(s.hi);
+        if(s.bhi>0){tb.textContent=note;tb.classList.add("on")}
+      } else {
+        /* совпали только конкурсные: их сумма — в заголовок, без плюса */
+        tt.textContent=note.replace(/^\+\s*/,"");
+      }
+      /* карточки: сначала сорт А, затем сорт Б */
+      s.ms.filter(function(p){return !p.tierB}).concat(s.ms.filter(function(p){return p.tierB}))
+        .forEach(function(pr){
+          var d=document.createElement("div"); d.className="pcard";
+          var h=document.createElement("h3"); h.textContent=L(pr.name); d.appendChild(h);
+          var r=document.createElement("div"); r.className="rng";
+          r.textContent=eur(pr.min)+" – "+eur(pr.max); d.appendChild(r);
+          var ds=document.createElement("p"); ds.textContent=L(pr.desc); d.appendChild(ds);
+          var c=document.createElement("span"); c.className="chip"+(pr.status==="open"?" open":"");
+          c.textContent=statusText(pr.status); d.appendChild(c);
+          if(pr.tierB){
+            var cb=document.createElement("span"); cb.className="chip";
+            cb.textContent=T("tierBChip"); d.appendChild(cb);
+          }
+          cards.appendChild(d);
+        });
+    }
+  }
+
+  document.getElementById("startBtn").onclick=function(){step=0;answers={};show("q");renderQ()};
+  document.getElementById("backBtn").onclick=function(){
+    if(step>0){step--; var qq=order[step]; delete answers[qq.id]; updateCounter(); renderQ();}
+    else show("hero");
+  };
+  document.getElementById("restartBtn").onclick=function(){step=0;answers={};updateCounter();show("hero")};
+  document.getElementById("shareBtn").onclick=function(){
+    var url="https://ikartuzov-hub.github.io/nam/?lang="+lang, text=T("shareText");
+    if(navigator.share){navigator.share({title:"nAm",text:text,url:url}).catch(function(){})}
+    else{
+      var full=text+" "+url, btn=this, old=T("shareBtn");
+      (navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(function(){
+        btn.textContent=T("shareCopied");setTimeout(function(){btn.textContent=old},1800);
+      }).catch(function(){prompt("",full)});
+    }
+  };
+
+  fetch("subsidies.json").then(function(r){return r.json()}).then(function(j){
+    DATA=j;
+    loadUI(function(){
+      fill();
+      var m=document.getElementById("mark");
+      m.classList.add("reveal");
+    });
+  });
+})();
 </script>
 </body>
 </html>
