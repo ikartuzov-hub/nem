@@ -164,7 +164,7 @@
     </div>
   </div>
 
-  <footer class="wrap">© <a href="https://www.linkedin.com/in/igor-kartuzov/">Igor Kartuzov</a> · <a id="hubLink" href="https://ikartuzov-hub.github.io/seedwave-catalog/hub/">SeedWave</a></footer>
+  <footer class="wrap">© <span id="fyear">2026</span> <a id="hubLink" href="https://ikartuzov-hub.github.io/seedwave-catalog/hub/">SeedWave</a> · <a href="https://www.linkedin.com/in/igor-kartuzov/">Igor Kartuzov</a></footer>
 
 <script>
   var I18N={
@@ -210,6 +210,7 @@
       cta:"Quiero"}
   };
   var LANGS=["ru","en","pt","es","de"];
+  document.getElementById("fyear").textContent=new Date().getFullYear();
   var root=document.documentElement, q=new URLSearchParams(location.search);
 
   function detectLang(){
